@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakArt Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>MakArt Store</h1>
+            <form class="search-bar" method="post" action='/search'>
+                <input type="text" name="find_holder" placeholder="Поиск" value="{{key}}">
+                <button id="info" type="submit">Поиск</button>
+            </form>
+        </div>
+    </header>
+    <div class="product_list">
+        <section class="products">
+            {% for product in find_products %}
+            <div class="product">
+                <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                    <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                    <p>{{ product[1] }}</p>
+                    <p> ... </p>
+                    <span>Цена: {{ product[2] }}</span>
+                </div>
+                <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+    <form class="submit_form">
+    <div class="checkout-btn" onclick="submitData()"> Корзина </div>
+    </form>
+    <script>
+        const backButton = Telegram.WebApp.BackButton;
+        backButton.show();
+        backButton.onClick(() => {
+            window.location.href = "/index";
+            backButton.hide();
+        });
+        try {
+            var localdata = JSON.parse(localStorage.bucket);
+            var bucket = Object.values(localdata);
+        }
+        catch(error)
+        {
+            var bucket = [];
+        }
+        if (bucket.length > 0){
+            var elements = document.querySelectorAll(".product_list button");   
+            for(var i = 0, len = elements.length; i < len; i++) { 
+                if (bucket.includes(elements[i].id)){
+                    document.getElementById(elements[i].id).innerText = 'Добавлено';
+                }
+                else{
+                    document.getElementById(elements[i].id).innerText = 'Добавить в корзину';
+                }
+            }
+        }
+        function Addtobucket(){
+            if(bucket.indexOf(event.target.id) === -1) {
+                bucket.push(event.target.id);
+                document.getElementById(event.target.id).innerText= "Добавлено";
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+            }
+            else {
+                var index = bucket.indexOf(event.target.id);
+                if (index > -1) {
+                    bucket.splice(index, 1);
+                }
+                document.getElementById(event.target.id).innerText= "Добавить в корзину";
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+            }
+        }
+        window.smoothScroll = function(target) {
+            var offsetPosition = target.getBoundingClientRect().top + window.pageYOffset - document.getElementsByClassName('upper')[0].offsetHeight;
+            window.scrollTo({
+                top: offsetPosition, 
+                behavior: 'smooth' 
+                });
+    }
+    function submitData() {
+        if (bucket.length != 0){
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bucket)
+            })
+            .then(response => response.json())
+            .then(jsonResponse => {
+                // Переходим на целевую страницу
+                window.location.href = jsonResponse.redirect;
+            });
+        }
+    }
+    const scrollSection = document.getElementById('horizontalScroll');
+        
+        // Обработчик колеса мыши
+        scrollSection.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            scrollSection.scrollLeft += e.deltaY;
+        });
+        
+        // Добавляем инерцию для плавности
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        scrollSection.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - scrollSection.offsetLeft;
+            scrollLeft = scrollSection.scrollLeft;
+        });
+        
+        scrollSection.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        
+        scrollSection.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+        
+        scrollSection.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollSection.offsetLeft;
+            const walk = (x - startX) * 2; // Умножаем для более быстрого скролла
+            scrollSection.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+</html>

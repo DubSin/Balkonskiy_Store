@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakArt Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+
+</head>
+<body>
+    <div class="upper"> 
+        <header>
+            <div class="header-content">
+                <h1>Balkonskiy Store</h1>
+                <form class="search-bar" method="post" action='/search'>
+                    <input type="text" name="find_holder" placeholder="Поиск">
+                    <button id="info" type="submit">Поиск</button>
+                </form>
+            </div>
+        </header>
+        <section class="product-categories" id="horizontalScroll">
+            <div class="category" onclick="smoothScroll(document.querySelector('.zip_hoodie h3'))">
+                <p>ZIP HOODIE</p>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.hoodie h3'))">
+                <p>HOODIE</p>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.sweatshirt h3'))">
+                <p>SWEATSHIRT</a>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.jacket h3'))">
+                <p>JACKET</a>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.sweater h3'))">
+                <p>SWEATER</a>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.zip h3'))">
+                <p>ZIP 1/4</a>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.t-shirt h3'))">
+                <p>T-SHIRT</a>
+            </div>
+            <div class="category" onclick="smoothScroll(document.querySelector('.sale h3'))">
+                <p>SALE</a>
+            </div>
+        </section>
+    </div>
+    <div class="product_list">
+        <div class = 'zip_hoodie'>
+        <h3>ZIP HOODIE</h3>
+        <section class="products">
+            {% for product in zip_hoodie %}
+            <div class="product">
+                <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                    <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                    <p>{{ product[1] }}</p>
+                    <p> ... </p>
+                    <span>Цена: {{ product[2] }}</span>
+                </div>
+                <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+            </div>
+            {% endfor %}
+        </section>
+        </div>
+        <div class = 'hoodie'>
+            <h3>HOODIE</h3>
+            <section class="products">
+                {% for product in hoodie %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 'sweatshirt'>
+            <h3>SWEATSHIRT</h3>
+            <section class="products">
+                {% for product in sweatshirt %}
+                <div class="product" >
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 'jacket'>
+            <h3>JACKET</h3>
+            <section class="products">
+                {% for product in jacket %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 'sweater'>
+            <h3>SWEATER</h3>
+            <section class="products">
+                {% for product in sweater %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 'zip'>
+            <h3>ZIP 1/4</h3>
+            <section class="products">
+                {% for product in zip %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 't-shirt'>
+            <h3>T-SHIRT</h3>
+            <section class="products">
+                {% for product in shirt %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        <div class = 'sale'>
+            <h3>SALE</h3>
+            <section class="products">
+                {% for product in sale %}
+                <div class="product">
+                    <div class="prod_body" onclick="openPage('/product{{ product[0] }}')">
+                        <img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}">
+                        <p>{{ product[1] }}</p>
+                        <p> ... </p>
+                        <span>Цена: {{ product[2] }}</span>
+                    </div>
+                    <button id="{{product[0]}}" onclick="Addtobucket()">Добавить в корзину</button>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+    <form class="submit_form">
+    <div class="checkout-btn" onclick="submitData()"> Корзина </div>
+    </form>
+    <script>
+        try {
+            var localdata = JSON.parse(localStorage.bucket);
+            var prob = Object.values(localdata);
+        }
+        catch(error)
+        {
+            var prob = [];
+        }
+        bucket = [];
+        if (prob.length > 0){
+            var elements = document.querySelectorAll(".product_list button");   
+            for(var i = 0, len = elements.length; i < len; i++) { 
+                if (prob.includes(elements[i].id)){
+                    bucket.push(elements[i].id)
+                    document.getElementById(elements[i].id).innerText = 'Добавлено';
+                }
+                else{
+                    document.getElementById(elements[i].id).innerText = 'Добавить в корзину';
+                }
+            }
+        }
+        function Addtobucket(){
+            if(bucket.indexOf(event.target.id) === -1) {
+                bucket.push(event.target.id);
+                document.getElementById(event.target.id).innerText= "Добавлено";
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+            }
+            else {
+                var index = bucket.indexOf(event.target.id);
+                if (index > -1) {
+                    bucket.splice(index, 1);
+                }
+                document.getElementById(event.target.id).innerText= "Добавить в корзину";
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+            }
+        }
+        window.smoothScroll = function(target) {
+            var offsetPosition = target.getBoundingClientRect().top + window.pageYOffset - document.getElementsByClassName('upper')[0].offsetHeight;
+            window.scrollTo({
+                top: offsetPosition, 
+                behavior: 'smooth' 
+                });
+    }
+    function submitData() {
+        if (bucket.length != 0){
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bucket)
+            })
+            .then(response => response.json())
+            .then(jsonResponse => {
+                // Переходим на целевую страницу
+                window.location.href = jsonResponse.redirect;
+            });
+        }
+    }
+    const scrollSection = document.getElementById('horizontalScroll');
+        
+        // Обработчик колеса мыши
+        scrollSection.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            scrollSection.scrollLeft += e.deltaY;
+        });
+        
+        // Добавляем инерцию для плавности
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        scrollSection.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - scrollSection.offsetLeft;
+            scrollLeft = scrollSection.scrollLeft;
+        });
+        
+        scrollSection.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        
+        scrollSection.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+        
+        scrollSection.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollSection.offsetLeft;
+            const walk = (x - startX) * 2; // Умножаем для более быстрого скролла
+            scrollSection.scrollLeft = scrollLeft - walk;
+        });
+        function openPage(page) {
+            localStorage.setItem("bucket", JSON.stringify(bucket));
+  			window.location.href=page
+		}
+    </script>
+</body>
+</html>

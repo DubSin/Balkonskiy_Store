@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+    <title>Корзина</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .cart-container {
+            background-color: white;
+            border-radius: 8px;
+            justify-content: space-between;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 10px;
+        }
+        
+        .item-price {
+            color: #333;
+            font-size: 16px;
+            margin: 10px;
+        }
+        
+        .summary {
+            margin-top: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        
+        .summary-label {
+            color: #666;
+        }
+        
+        .summary-value {
+            font-weight: bold;
+        }
+        
+        .total {
+            font-size: 18px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkout-btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 4px;
+            margin-top: 20px; 
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #333;
+        }
+
+        .product_button {
+            padding: 8px 15px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 480px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .item-info {
+                margin-bottom: 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .item-name {
+                font-size: 16px;
+            }
+            
+            .item-price, .item-quantity {
+                font-size: 14px;
+            }
+            
+            .total {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Корзина</h1>
+        
+        <div class="cart-item">
+            {% for product in products %}
+            <div class="item-info">
+                <img img src="/static/{{product[5]}}" alt="Товар {{ product[0] }}" style="width: 150px;height: 150px;">
+                <div class="item-name">{{ product[1] }}</div>
+                <div class="item-price">{{ product[2] }}</div>
+            </div>
+            <button id="{{ product[0] }}" onclick='delProduct("{{ product[0] }}")' class='product_button'>Убрать товар</button>
+            {% endfor %}
+        </div>
+        
+        <div class="summary">
+            <div class="summary-row">
+                <span class="summary-label">Сумма заказа</span>
+                <span class="summary-value">{{total_price}}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Доставка</span>
+                <span class="summary-value">Бесплатно</span>
+            </div>
+            <div class="summary-row total">
+                <span>Итого</span>
+                <span>{{ total_price }}</span>
+            </div>
+        </div>
+        
+        <button class="checkout-btn" onclick="openPage('/order_details')">Продолжить</button>
+        <script>
+            var data = "{{ inner_data }}".split('|');
+            function openPage(page) {
+                  window.location.href=page
+            }
+            const backButton = Telegram.WebApp.BackButton;
+            backButton.show();
+            backButton.onClick(() => {
+                window.location.href = "/index";
+                backButton.hide();
+                });
+            function delProduct(del_id){
+                var pos = data.indexOf(del_id);
+                var newdata = [];
+                for (let i = 0; i < data.length; i++) {
+                    if (i !== pos){
+                        newdata.push(data[i])
+                    }
+                }
+                localStorage.setItem("bucket", JSON.stringify(newdata));
+                if (newdata.length == 0){
+                    window.location.href = "/index";
+                }
+                else {
+                    window.location.href = "/bucket/" + newdata.join('%7C');
+                }
+            }
+      </script>
+    </div>
+</body>
+</html>
