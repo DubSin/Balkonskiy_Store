@@ -229,10 +229,10 @@
                 if (delivery == 'Доставка'){
                     var adress = document.getElementById('address').value;
                     var comment = document.getElementById('comment').value;
-                    var data = [payment, delivery, tel, name, phone, adress, comment, bucket];
+                    var data = [payment, delivery, name, phone, adress, comment, tel, bucket];
                 }
                 else{
-                    var data = [payment, delivery, tel, name, phone, bucket];
+                    var data = [payment, delivery, name, phone, tel, bucket];
                 }
                 localStorage.clear();
                 Telegram.WebApp.sendData(JSON.stringify(data));
